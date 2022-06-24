@@ -8,7 +8,7 @@ import CanvasOverImage from "../public/game_canvas_overlay.png";
 
 import Items from "./Item.jsx";
 
-const INIT_ICON = [0, 0, 0, 0, 0];
+const INIT_ICON = [1, 1, 1, 1, 1];
 
 export default function Home() {
   const [curIcons, setCurIcons] = useState(INIT_ICON);
@@ -123,6 +123,17 @@ export default function Home() {
           content: "";
           display: block;
           clear: both;
+        }
+      `}</style>
+
+      <style global jsx>{`
+        body,
+        html {
+          /* set size of body to full page and remove margins */
+          width: 100%;
+          height: 100%;
+          padding: 0;
+          margin: 0;
         }
       `}</style>
     </div>

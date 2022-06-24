@@ -30,11 +30,11 @@ for (let i = 0; i < 5; i++) {
   );
 }
 
-const ICON_WIDTH = 119; // px
-const ICON_HEIGHT = 119; // px
+// const ICON_WIDTH = 119; // px
+// const ICON_HEIGHT = 119; // px
 const ICON_NUM_TH = 20;
-const ICON_DIV_SIZE = 124.5; // px
-const THRESHOLD = ICON_NUM_TH * ICON_DIV_SIZE;
+// const ICON_DIV_SIZE = 124.5; // px
+// const THRESHOLD = ICON_NUM_TH * ICON_DIV_SIZE;
 
 export default function Items({
   curIcons,
@@ -48,6 +48,13 @@ export default function Items({
   const itemsRef3 = useRef();
   const itemsRef4 = useRef();
   const itemsRef5 = useRef();
+  const [iconWidth, setIconWidth] = useState(0);
+  // const [topOffset, setTopOffset] = useState(0);
+
+  useEffect(() => {
+    setIconWidth(itemsRef1.current.offsetWidth);
+    // setTopOffset()
+  }, []);
 
   function getItems(
     curIcons,
@@ -58,48 +65,63 @@ export default function Items({
     ...itemsRefs
   ) {
     const items = [];
+    const THRESHOLD = ICON_NUM_TH * iconWidth;
     for (let i = 0; i < 5; i++) {
-      let _scroll = itemsRefs[i].current
-        ? parseFloat(itemsRefs[i].current.style.top.replace("px", ""))
-        : -10 * ICON_DIV_SIZE;
-      let scroll = _scroll;
+      let _scroll = 0;
+      if (
+        itemsRefs[i].current &&
+        parseFloat(itemsRefs[i].current.style.top.replace("px", "")) !== 0
+      ) {
+        _scroll = parseFloat(itemsRefs[i].current.style.top.replace("px", ""));
+      } else {
+        _scroll = -10 * iconWidth;
+      }
 
-      // console.log(curIcons, finallIcons);
+      // ? parseFloat(itemsRefs[i].current.style.top.replace("px", ""))
+      // : -10 * iconWidth;
+      let scroll = _scroll;
+      // console.log(itemsRefs[i].current.offsetWidth);
+      // console.log(itemsRefs[i].current.clientWidth);
+      console.log(iconWidth);
+      console.log(curIcons, finallIcons);
       if (buttonAble) {
-        const value = scroll <= -30 * ICON_DIV_SIZE ? THRESHOLD : 0;
+        const value = scroll <= -30 * iconWidth ? THRESHOLD : 0;
         scroll += value;
       } else {
-        const value =
-          (finallIcons[i] + ICON_NUM_TH - curIcons[i]) * ICON_DIV_SIZE;
+        const value = (finallIcons[i] + ICON_NUM_TH - curIcons[i]) * iconWidth;
         scroll -= value;
       }
 
       items.push(
         <div
-          key={i + 1}
+          key={i.toString()}
           className={`c${i + 1}`}
           ref={itemsRefs[i]}
           onTransitionEnd={() => {
-            setButtonAble(true); // Button Able
-            setCurIcons(finallIcons); // finallIcons -> curIcons
+            if (i == 4) {
+              setButtonAble(true); // Button Able
+              setCurIcons(finallIcons); // finallIcons -> curIcons
+            }
           }}
           style={{
+            width: "20%",
             float: "left",
             position: "relative",
             top: `${scroll}px`,
             transition: buttonAble
               ? null
-              : `top ${2}s cubic-bezier(0.25,0.1,0.25,1)`,
+              : `top ${0.5 + i * 0.5}s cubic-bezier(0.25,0.1,0.25,1)`,
           }}
         >
           {icons.map((d, index) => {
+            // console.log(index);
             return (
-              <div>
+              <div key={index} style={{ width: iconWidth, height: iconWidth }}>
                 <Image
                   src={d}
-                  key={index}
-                  width={ICON_WIDTH}
-                  height={ICON_HEIGHT}
+                  // width={iconWidth}
+                  // height={iconWidth}
+                  // layout="fill"
                 ></Image>
               </div>
             );
@@ -136,14 +158,14 @@ export default function Items({
         }
 
         .itemsicon {
-          width: 595px;
+          width: 42%;
           height: 530px;
           // background-color: red;
           position: absolute;
           left: 0;
           right: 0;
           bottom: 0;
-          top: 16px;
+          top: 5%;
           margin: auto;
           overflow: hidden;
         }
