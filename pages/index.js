@@ -5,6 +5,7 @@ import { random } from "../common/util.js";
 import BGImage from "../public/game_backdrop.jpg";
 import CanvasImage from "../public/game_canvas.png";
 import CanvasOverImage from "../public/game_canvas_overlay.png";
+import Button from "../public/spin_button.png";
 
 import Items from "./Item.jsx";
 
@@ -16,6 +17,10 @@ export default function Home() {
   const [buttonAble, setButtonAble] = useState(true);
 
   const click = (e) => {
+    if (!buttonAble) {
+      console.log("游戏正在运行中, 无法重复点击");
+      return;
+    }
     const arr = [];
     const r = random(1, 100);
     const iconIndex = random(1, 10);
@@ -98,8 +103,14 @@ export default function Home() {
         <Image src={CanvasOverImage} layout="fill"></Image>
       </div>
 
-      <div className="button" onClick={click}>
-        <button>spin</button>
+      <div
+        className="button"
+        onClick={click}
+        style={{ cursor: buttonAble ? "pointer" : "not-allowed" }}
+      >
+        {/* <button disabled={!buttonAble}> */}
+        <Image src={Button} layout="fill"></Image>
+        {/* </button> */}
       </div>
 
       <style jsx>{`
@@ -113,6 +124,20 @@ export default function Home() {
 
         .button {
           position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          // top: 0;
+          margin: auto;
+          width: 13.7%;
+          height: 10.5%;
+        }
+
+        button {
+          border: 0;
+          padding: 0;
+          background-color: red;
+          // opacity: 0.2;
         }
 
         .clearfix {
