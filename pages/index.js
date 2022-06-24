@@ -1,20 +1,19 @@
 import { useState, useEffect } from "react";
-
 import Image from "next/image";
 
 import { random } from "../common/util.js";
-
 import BGImage from "../public/game_backdrop.jpg";
 import CanvasImage from "../public/game_canvas.png";
 import CanvasOverImage from "../public/game_canvas_overlay.png";
 
 import Items from "./Item.jsx";
 
-const INIT_ICON = [3, 3, 3, 3, 3];
+const INIT_ICON = [0, 0, 0, 0, 0];
 
 export default function Home() {
   const [curIcons, setCurIcons] = useState(INIT_ICON);
   const [finallIcons, setFinallIcons] = useState(INIT_ICON);
+  const [buttonAble, setButtonAble] = useState(true);
 
   const click = (e) => {
     const arr = [];
@@ -69,6 +68,7 @@ export default function Home() {
       }
     }
 
+    setButtonAble(false);
     setFinallIcons(arr);
   };
 
@@ -82,12 +82,17 @@ export default function Home() {
         <Image src={CanvasImage} layout="fill"></Image>
       </div>
 
-      {/* <div className="items">
-        <div className="itemsicon clearfix">
-          {getItems(curIcons, finallIcons)}
-        </div>
-      </div> */}
-      <Items curIcons={curIcons} finallIcons={finallIcons}></Items>
+      <Items
+        curIcons={curIcons}
+        finallIcons={finallIcons}
+        buttonAble={buttonAble}
+        setButtonAble={(able) => {
+          setButtonAble(able);
+        }}
+        setCurIcons={(cis) => {
+          setCurIcons(cis);
+        }}
+      ></Items>
 
       <div className="slot-machine" style={{ position: "absolute" }}>
         <Image src={CanvasOverImage} layout="fill"></Image>
@@ -108,25 +113,6 @@ export default function Home() {
 
         .button {
           position: absolute;
-        }
-
-        .items {
-          width: 100%;
-          height: 100%;
-          position: absolute;
-        }
-
-        .itemsicon {
-          width: 595px;
-          height: 530px;
-          background-color: red;
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          top: 16px;
-          margin: auto;
-          overflow: hidden;
         }
 
         .clearfix {

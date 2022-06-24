@@ -32,60 +32,84 @@ for (let i = 0; i < 5; i++) {
 
 const ICON_WIDTH = 119; // px
 const ICON_HEIGHT = 119; // px
+const ICON_NUM_TH = 20;
+const ICON_DIV_SIZE = 124.5; // px
+const THRESHOLD = ICON_NUM_TH * ICON_DIV_SIZE;
 
-function getItems(curIcons, finallIcons, ...itemsRefs) {
-  const items = [];
-  for (let i = 0; i < 5; i++) {
-    let scroll = itemsRefs[i].current
-      ? parseFloat(itemsRefs[i].current.style.top.replace("px", ""))
-      : 0;
-
-    // console.log(itemsRefs[i].current.style.top);
-    // console.log(scroll);
-
-    if (curIcons[i] === finallIcons[i]) {
-      scroll -= 10 * 124.5;
-    } else {
-      scroll -= (finallIcons[i] + 10 - curIcons[i]) * 124.5;
-    }
-
-    items.push(
-      <div
-        key={i + 1}
-        className={`c${i + 1}`}
-        ref={itemsRefs[i]}
-        style={{
-          float: "left",
-          position: "relative",
-          top: `${scroll}px`,
-          transition: `top ${0.5}s cubic-bezier(0.25,0.1,0.25,1)`,
-        }}
-      >
-        {icons.map((d, index) => {
-          return (
-            <div>
-              <Image
-                src={d}
-                key={index}
-                width={ICON_WIDTH}
-                height={ICON_HEIGHT}
-              ></Image>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  return items;
-}
-
-export default function Items({ curIcons, finallIcons }) {
+export default function Items({
+  curIcons,
+  finallIcons,
+  buttonAble,
+  setButtonAble,
+  setCurIcons,
+}) {
   const itemsRef1 = useRef();
   const itemsRef2 = useRef();
   const itemsRef3 = useRef();
   const itemsRef4 = useRef();
   const itemsRef5 = useRef();
+
+  function getItems(
+    curIcons,
+    finallIcons,
+    buttonAble,
+    setButtonAble,
+    setCurIcons,
+    ...itemsRefs
+  ) {
+    const items = [];
+    for (let i = 0; i < 5; i++) {
+      let _scroll = itemsRefs[i].current
+        ? parseFloat(itemsRefs[i].current.style.top.replace("px", ""))
+        : -10 * ICON_DIV_SIZE;
+      let scroll = _scroll;
+
+      // console.log(curIcons, finallIcons);
+      if (buttonAble) {
+        const value = scroll <= -30 * ICON_DIV_SIZE ? THRESHOLD : 0;
+        scroll += value;
+      } else {
+        const value =
+          (finallIcons[i] + ICON_NUM_TH - curIcons[i]) * ICON_DIV_SIZE;
+        scroll -= value;
+      }
+
+      items.push(
+        <div
+          key={i + 1}
+          className={`c${i + 1}`}
+          ref={itemsRefs[i]}
+          onTransitionEnd={() => {
+            setButtonAble(true); // Button Able
+            setCurIcons(finallIcons); // finallIcons -> curIcons
+          }}
+          style={{
+            float: "left",
+            position: "relative",
+            top: `${scroll}px`,
+            transition: buttonAble
+              ? null
+              : `top ${2}s cubic-bezier(0.25,0.1,0.25,1)`,
+          }}
+        >
+          {icons.map((d, index) => {
+            return (
+              <div>
+                <Image
+                  src={d}
+                  key={index}
+                  width={ICON_WIDTH}
+                  height={ICON_HEIGHT}
+                ></Image>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    return items;
+  }
 
   return (
     <div className="items">
@@ -93,6 +117,9 @@ export default function Items({ curIcons, finallIcons }) {
         {getItems(
           curIcons,
           finallIcons,
+          buttonAble,
+          setButtonAble,
+          setCurIcons,
           itemsRef1,
           itemsRef2,
           itemsRef3,
@@ -102,18 +129,6 @@ export default function Items({ curIcons, finallIcons }) {
       </div>
 
       <style jsx>{`
-        .bg,
-        .canvas,
-        .slot-machine {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-        }
-
-        .button {
-          position: absolute;
-        }
-
         .items {
           width: 100%;
           height: 100%;
@@ -123,7 +138,7 @@ export default function Items({ curIcons, finallIcons }) {
         .itemsicon {
           width: 595px;
           height: 530px;
-          background-color: red;
+          // background-color: red;
           position: absolute;
           left: 0;
           right: 0;
