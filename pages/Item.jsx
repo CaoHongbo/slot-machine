@@ -179,7 +179,18 @@ export default function Items({
           display: block;
           clear: both;
         }
+
+        @media only screen and (min-width: 1200px) {
+          .itemsicon {
+
+            height: 72%;
+
+            top: 3.3%;
+ 
+          }
+        }
       `}</style>
+
     </div>
   );
 }
