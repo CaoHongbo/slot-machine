@@ -19,9 +19,10 @@ export default function Home() {
 
   const click = (e) => {
     if (!buttonAble) {
-      console.log("游戏正在运行中, 无法重复点击");
+      console.log("Game is Running!!! Cant re-run now!!");
       return;
     }
+
     const arr = [];
     const r = random(1, 100);
     const iconIndex = random(1, 10);
@@ -29,6 +30,7 @@ export default function Home() {
     if (r <= 2) {
       // %2 win 10ways
       arr.push(iconIndex, iconIndex, iconIndex, iconIndex, iconIndex);
+      setWin(true);
     } else if (r <= 7) {
       // %5 win 20ways
       if (iconIndex <= 5) {
@@ -36,6 +38,7 @@ export default function Home() {
       } else {
         arr.push(iconIndex, iconIndex, iconIndex, iconIndex, iconIndex - 1);
       }
+      setWin(true);
     } else if (r <= 17) {
       // %10 win 90ways
       if (iconIndex <= 3) {
@@ -45,6 +48,7 @@ export default function Home() {
       } else {
         arr.push(iconIndex, iconIndex, iconIndex, iconIndex - 2, iconIndex - 1);
       }
+      setWin(true);
     } else {
       // lose
       if (iconIndex <= 3) {
@@ -72,6 +76,7 @@ export default function Home() {
           iconIndex - 6
         );
       }
+      setWin(false);
     }
 
     setButtonAble(false);
@@ -92,6 +97,7 @@ export default function Home() {
         curIcons={curIcons}
         finallIcons={finallIcons}
         buttonAble={buttonAble}
+        win={win}
         setButtonAble={(able) => {
           setButtonAble(able);
         }}
@@ -161,8 +167,6 @@ export default function Home() {
           padding: 0;
           margin: 0;
         }
-
-
       `}</style>
     </div>
   );

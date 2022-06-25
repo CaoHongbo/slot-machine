@@ -59,6 +59,7 @@ export default function Items({
   buttonAble,
   setButtonAble,
   setCurIcons,
+  win,
 }) {
   const itemsRef1 = useRef();
   const itemsRef2 = useRef();
@@ -131,7 +132,7 @@ export default function Items({
             if (i == 4) {
               setButtonAble(true); // Button Able
               setCurIcons(finallIcons); // finallIcons -> curIcons
-              // alert('you win');
+              alert(win ? "you win" : "you lose");
             }
           }}
           style={{
