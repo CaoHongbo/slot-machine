@@ -36,6 +36,23 @@ const ICON_NUM_TH = 20;
 // const ICON_DIV_SIZE = 124.5; // px
 // const THRESHOLD = ICON_NUM_TH * ICON_DIV_SIZE;
 
+function getPageScale() {
+  var pageWidth = window.innerWidth,
+    pageHeight = window.innerHeight;
+
+  if (typeof pageWidth !== "number") {
+    if (document.compatMode === "CSS1Compat") {
+      pageWidth = document.documentElement.clientWidth;
+      pageHeight = document.documentElement.clientHeight;
+    } else {
+      pageWidth = document.body.clientWidth;
+      pageHeight = document.body.clientHeight;
+    }
+  }
+
+  return { pageWidth, pageHeight };
+}
+
 export default function Items({
   curIcons,
   finallIcons,
@@ -49,11 +66,13 @@ export default function Items({
   const itemsRef4 = useRef();
   const itemsRef5 = useRef();
   const [iconWidth, setIconWidth] = useState(0);
-  // const [topOffset, setTopOffset] = useState(0);
+  const [iconHeight, setIconHeight] = useState(0);
 
   useEffect(() => {
     setIconWidth(itemsRef1.current.offsetWidth);
-    // setTopOffset()
+    setIconHeight(getPageScale().pageHeight / 8.28);
+    // console.log(window.screen.width);
+    // console.log(window.screen.height);
   }, []);
 
   function getItems(
@@ -65,7 +84,8 @@ export default function Items({
     ...itemsRefs
   ) {
     const items = [];
-    const THRESHOLD = ICON_NUM_TH * iconWidth;
+    const THRESHOLD = ICON_NUM_TH * iconHeight;
+
     for (let i = 0; i < 5; i++) {
       let _scroll = 0;
       if (
@@ -74,22 +94,32 @@ export default function Items({
       ) {
         _scroll = parseFloat(itemsRefs[i].current.style.top.replace("px", ""));
       } else {
-        _scroll = -10 * iconWidth;
+        _scroll = -30 * iconHeight;
       }
 
-      // ? parseFloat(itemsRefs[i].current.style.top.replace("px", ""))
-      // : -10 * iconWidth;
       let scroll = _scroll;
-      // console.log(itemsRefs[i].current.offsetWidth);
-      // console.log(itemsRefs[i].current.clientWidth);
-      console.log(iconWidth);
-      console.log(curIcons, finallIcons);
       if (buttonAble) {
-        const value = scroll <= -30 * iconWidth ? THRESHOLD : 0;
-        scroll += value;
+        // Do not use recious caution const value = scroll <= -30 * iconHeight ? THRESHOLD : 0;
+        const value = THRESHOLD;
+        scroll += THRESHOLD;
+        console.log(
+          `_scroll:${_scroll}, scroll:${scroll}, ${i}, [${curIcons}], [${finallIcons}], ${value}, ${iconWidth}, ${iconHeight}, ${
+            -30 * iconHeight
+          }`
+        );
       } else {
-        const value = (finallIcons[i] + ICON_NUM_TH - curIcons[i]) * iconWidth;
+        const value = (finallIcons[i] + ICON_NUM_TH - curIcons[i]) * iconHeight;
         scroll -= value;
+      }
+
+      if (scroll <= -40 * iconHeight) {
+        console.warn(
+          "programming error, plz check " +
+            `_scroll:${_scroll}, scroll:${scroll}, ${i}, [${curIcons}], [${finallIcons}], ${iconWidth}, ${iconHeight}`
+        );
+        // alert("error");
+        // scroll += 10 * iconHeight;
+        // console.warn(`fixScroll:${scroll}`);
       }
 
       items.push(
@@ -101,6 +131,7 @@ export default function Items({
             if (i == 4) {
               setButtonAble(true); // Button Able
               setCurIcons(finallIcons); // finallIcons -> curIcons
+              // alert('you win');
             }
           }}
           style={{
@@ -116,12 +147,12 @@ export default function Items({
           {icons.map((d, index) => {
             // console.log(index);
             return (
-              <div key={index} style={{ width: iconWidth, height: iconWidth }}>
+              <div key={index} style={{ width: iconWidth, height: iconHeight }}>
                 <Image
                   src={d}
-                  // width={iconWidth}
-                  // height={iconWidth}
-                  // layout="fill"
+                  width={iconWidth}
+                  height={iconHeight}
+                  layout="fixed"
                 ></Image>
               </div>
             );
@@ -180,17 +211,13 @@ export default function Items({
           clear: both;
         }
 
-        @media only screen and (min-width: 1200px) {
+        @media only screen and (min-width: 1280px) {
           .itemsicon {
-
             height: 72%;
-
             top: 3.3%;
- 
           }
         }
       `}</style>
-
     </div>
   );
 }

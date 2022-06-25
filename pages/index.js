@@ -15,6 +15,7 @@ export default function Home() {
   const [curIcons, setCurIcons] = useState(INIT_ICON);
   const [finallIcons, setFinallIcons] = useState(INIT_ICON);
   const [buttonAble, setButtonAble] = useState(true);
+  const [win, setWin] = useState(true);
 
   const click = (e) => {
     if (!buttonAble) {
