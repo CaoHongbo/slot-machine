@@ -7,7 +7,7 @@ import CanvasImage from "../public/game_canvas.png";
 import CanvasOverImage from "../public/game_canvas_overlay.png";
 import Button from "../public/spin_button.png";
 
-import Items from "./Item.jsx";
+import Items from "../components/Item.jsx";
 
 const INIT_ICON = [1, 1, 1, 1, 1];
 
@@ -116,7 +116,7 @@ export default function Home() {
         style={{ cursor: buttonAble ? "pointer" : "not-allowed" }}
       >
         {/* <button disabled={!buttonAble}> */}
-        <Image src={Button} layout="fill"></Image>
+        <Image src={Button} layout="fill" priority></Image>
         {/* </button> */}
       </div>
 

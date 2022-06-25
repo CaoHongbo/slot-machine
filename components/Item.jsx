@@ -113,7 +113,7 @@ export default function Items({
         scroll -= value;
       }
 
-      if (scroll <= -40 * iconHeight) {
+      if (scroll <= -40 * iconHeight && iconHeight !== 0) {
         console.warn(
           "programming error, plz check " +
             `_scroll:${_scroll}, scroll:${scroll}, ${i}, [${curIcons}], [${finallIcons}], ${iconWidth}, ${iconHeight}`
